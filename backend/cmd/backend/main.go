@@ -8,7 +8,7 @@ import (
 	"net"
 	"strconv"
 
-	nosql "../../pkg/nosql"
+	mysql "../../pkg/mysql"
 )
 
 //Packet will hold JSON information for later decoding
@@ -34,22 +34,28 @@ func handleRequest(c net.Conn) {
 
 func main() {
 	var port = flag.Int("listen", 8081, "the port number") //default port is 8081
-	l, listenErr := net.Listen("tcp", ":"+strconv.Itoa(*port))
-	if listenErr != nil {
-		log.Panicln(listenErr)
+	var dsn = flag.String("dsn", "", "sets data source name for backend server")
+
+	flag.Parse()
+
+	if *dsn == "" {
+		log.Fatalln("You need to provide a DSN using the -dsn flag")
 	}
 
-	log.Println("Opening client connections on port", *port)
-
-	dsn := "mongodb://admin:basketorangenumberbleacher@amarna-shard-00-00-gcgag.gcp.mongodb.net:27017,amarna-shard-00-01-gcgag.gcp.mongodb.net:27017,amarna-shard-00-02-gcgag.gcp.mongodb.net:27017/test?ssl=true&replicaSet=Amarna-shard-0&authSource=admin&retryWrites=true"
-	_, datastoreErr := nosql.NewDatastore(dsn)
+	_, datastoreErr := mysql.NewDatastore(*dsn)
 	if datastoreErr != nil {
 		log.Fatalln("Could not create datastore. Received err:", datastoreErr)
 	}
 	log.Println("Connected to the datastore!")
 
-	log.Println("Starting Amarna backend...")
+	log.Println("Opening client connections on port", *port)
+	l, listenErr := net.Listen("tcp", ":"+strconv.Itoa(*port))
+	if listenErr != nil {
+		log.Fatalln("Could not listen to tcp port. Received err:", listenErr)
+	}
+	log.Println("Opened client connections!")
 
+	log.Println("Starting Amarna backend...")
 	for {
 		conn, connErr := l.Accept()
 		if connErr != nil {
