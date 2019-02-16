@@ -6,8 +6,14 @@ CREATE TABLE User
 (
     username varchar(64),
     f_name varchar(64),
-    l_name
+    l_name varchar(64)
     PRIMARY KEY (username)
+);
+
+CREATE TABLE Language
+(
+    lang_name varchar(32),
+    PRIMARY KEY(lang_name)
 );
 
 CREATE Table Pairing 
@@ -23,11 +29,6 @@ CREATE Table Pairing
     FOREIGN KEY (rightUserLang) REFERENCES Language(lang_name)
 );
 
-CREATE TABLE Language
-(
-    lang_name varchar(32),
-    PRIMARY KEY(lang_name)
-);
 
 CREATE TABLE KnownLang
 (
