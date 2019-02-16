@@ -23,6 +23,7 @@ func main() {
 		fmt.Println("There was a connection error")
 		log.Panicln(e)
 	}
+	defer c.Close()
 
 	encode := json.NewEncoder(c)
 
@@ -36,5 +37,5 @@ func main() {
 	if jsonEncodeErr != nil {
 		fmt.Printf("Ertror is: %v", jsonEncodeErr)
 	}
-	c.Close()
+
 }

@@ -18,6 +18,7 @@ type Packet struct {
 }
 
 func handleRequest(c net.Conn) {
+	defer c.Close()
 	var header Packet
 	// we create a decoder that reads directly from the socket
 	decode := json.NewDecoder(c)
@@ -28,8 +29,6 @@ func handleRequest(c net.Conn) {
 	}
 
 	fmt.Printf("Action: %s, CompName: %s\n", header.Action, header.CompName)
-
-	c.Close()
 
 }
 
@@ -54,7 +53,7 @@ func main() {
 	for {
 		conn, connErr := l.Accept()
 		if connErr != nil {
-			log.Panicln(connErr)
+			log.Println(connErr)
 		}
 
 		go handleRequest(conn)
