@@ -99,7 +99,7 @@ func handleJSON(header Message) {
 				log.Println("An error occured. Error:", updateKnownErr)
 			}
 		}
-
+		r
 	case "UpdateLearnLangs":
 		for i := range header.Users {
 			updateLearnErr := UpdateLearnLangs(header.Users[i])
@@ -149,6 +149,6 @@ func main() {
 		}
 
 		go handleRequest(conn)
-
 	}
+	flag.Parse()
 }
