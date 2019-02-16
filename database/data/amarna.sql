@@ -1,12 +1,12 @@
-drop database tables;
-create database tables;
-use tables;
+drop database amarna;
+create database amarna;
+use amarna;
 
 CREATE TABLE User
 (
     username varchar(64),
     f_name varchar(64),
-    l_name varchar(64)
+    l_name varchar(64),
     PRIMARY KEY (username)
 );
 
@@ -28,7 +28,6 @@ CREATE Table Pairing
     FOREIGN KEY (leftUserLang) REFERENCES Language(lang_name),
     FOREIGN KEY (rightUserLang) REFERENCES Language(lang_name)
 );
-
 
 CREATE TABLE KnownLang
 (
@@ -66,25 +65,22 @@ CREATE TABLE Section
     PRIMARY KEY (topic_title, topic_lang, week),
     FOREIGN KEY (topic_title) REFERENCES Topic(title) on delete cascade,
     FOREIGN KEY (topic_lang) REFERENCES Language(lang_name) on delete cascade
-)
+);
 
 CREATE TABLE Letter
 (
     leftUser varchar(64),
     rightUser varchar(64),
-    date timestamp,
     topic_title varchar(128),
     topic_lang varchar(32),
     week int,
+    ts timestamp, -- ts stands for timestamp
     body varchar(1024),
     PRIMARY KEY (leftUser, rightUser, topic_title, topic_lang, week),
-    FOREIGN KEY(leftUser) REFERENCES User(username),
+    FOREIGN KEY (leftUser) REFERENCES User(username),
     FOREIGN KEY (rightUser) REFERENCES User(username),
-    FOREIGN KEY (topic_title) REFERENCES Topic(title),
-    FOREIGN KEY (topic_lang) REFERENCES Language(lang_name),
-    FOREIGN KEY (week) REFERENCES Section(week)
+    FOREIGN KEY (topic_title, topic_lang, week) REFERENCES Section(topic_title, topic_lang, week)
 );
-
 
 SELECT "------------------------- Adding Data -------------------------" as "";
 -- Insert dummy data
@@ -98,6 +94,13 @@ VALUES
     ("justin39", "Justin", "Wang"),
     ("andrew29", "Andrew", "Chen");
 
+INSERT INTO Language
+    (lang_name)
+VALUES
+    ("English"),
+    ("Spanish"),
+    ("Chinese");
+
 INSERT INTO Pairing
     (leftUser, rightUser, leftUserLang, rightUserLang)
 VALUES
@@ -107,13 +110,6 @@ VALUES
     ("andrew29", "gqo", "English", "Chinese"),
     ("justin39", "rtr", "Chinese", "English"),
     ("rtr", "justin39", "English", "Chinese");
-
-INSERT INTO Language
-    (lang_name)
-VALUES
-    ("English"),
-    ("Spanish"),
-    ("Chinese");
 
 INSERT INTO KnownLang
     (username, lang_name)
@@ -137,7 +133,7 @@ VALUES
     ("rtr", "Spanish");
 
 INSERT INTO Topic
-    (title, lang_name, length
+    (title, lang_name, length)
 VALUES
     ("Introduction", "English", 100),
     ("Introduction", "Spanish", 100),
@@ -151,13 +147,7 @@ VALUES
     ("Introduction", "Spanish", 1, "introduction to your new Pal! Introduce your name, where you live, and occupation");
     
 INSERT INTO Letter
-    (leftUser, rightUser, date, topic_title, topic_lang, week, body)
+    (leftUser, rightUser, ts, topic_title, topic_lang, week, body)
 VALUES
     ("rtr", "amvasquez", NOW(), "Introduction", "Spanish", 1, "HOLA ANDREA, YO SO REECE. YO SOY MEJOR DE JUSTIN EN EL JUEGO DE BEAT SABER"),
     ("justin39", "rtr", NOW(), "Introduction", "Chinese", 1, "你好瑞思，我叫家四厅");
-
-
-
-
-
-
