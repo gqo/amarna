@@ -48,3 +48,8 @@ type Section struct {
 	Week       int32  `json:"week"`
 	Desc       string `json:"desc"`
 }
+
+//Language defines a language of a topic
+type Language struct {
+	LangName string `json:"lang-name"`
+}
