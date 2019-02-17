@@ -23,23 +23,27 @@ func (t JSONTime) MarshalJSON() ([]byte, error) {
 
 // Letter defines the letters that have been sent between users
 type Letter struct {
-	From      string   `json:"from"`
-	To        string   `json:"to"`
-	Timestamp JSONTime `json:"timestamp"`
-	Topic     string   `json:"topic"`
-	Week      int32    `json:"week"`
+	From       string   `json:"from"`
+	To         string   `json:"to"`
+	TopicTitle string   `json:"topic_title"`
+	TopicLang  string   `json:"topic_lang"`
+	Week       int32    `json:"week"`
+	Timestamp  JSONTime `json:"timestamp"`
+	Body       string   `json:"body"`
 }
 
 // Pairing defines pairs of users that have matched
 type Pairing struct {
-	LeftUser  string `json:"left_user"`
-	RightUser string `json:"right_user"`
+	LeftUser      string `json:"left_user"`
+	RightUser     string `json:"right_user"`
+	LeftUserLang  string `json:"left_user_lang"`
+	RightUserLang string `json:"right_user_lang"`
 }
 
 // Topic defines a topic for learning in Amarna
 type Topic struct {
 	Title  string `json:"title"`
-	Length string `json:"length"`
+	Length int32  `json:"length"`
 }
 
 // Section defines a section of a topic
@@ -47,4 +51,9 @@ type Section struct {
 	TopicTitle string `json:"topic_title"`
 	Week       int32  `json:"week"`
 	Desc       string `json:"desc"`
+}
+
+// Language defines a language handled by Amarna
+type Language struct {
+	LangName string `json:"lang_name"`
 }
