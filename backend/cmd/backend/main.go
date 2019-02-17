@@ -48,6 +48,7 @@ func main() {
 	http.HandleFunc("/ValidateUser", ValidateUserHandler)
 	http.HandleFunc("/GetPairings", GetPairingsHandler)
 	http.HandleFunc("/GetLetters", GetLettersHandler)
+
 	log.Println("Starting Amarna backend...")
 	// for {
 	// 	conn, connErr := l.Accept()
@@ -62,12 +63,13 @@ func main() {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
+    enableCors(&w)
 	fmt.Fprintf(w, "Hello world!")
-
 }
 
 //ValidateUserHandler will handle decoding of JSON packages for user validation and deliver a result to the frontend
 func ValidateUserHandler(w http.ResponseWriter, r *http.Request) {
+    enableCors(&w)
 	username := "gqo"
 	isValid, ValidateUserErr := db.ValidateUser(username)
 
@@ -129,4 +131,8 @@ func GetPairingsHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("There has been a marshalling error:", marshErr)
 	}
 	fmt.Fprintf(w, string(respMarsh))
+}
+
+func enableCors(w *http.ResponseWriter) {
+    (*w).Header().Set("Access-Control-Allow-Origin", "*")
 }
