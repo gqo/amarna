@@ -150,6 +150,7 @@ func GetPairingsHandler(w http.ResponseWriter, r *http.Request) {
 
 func enableCors(w *http.ResponseWriter) {
 	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
 }
 
 //SendLetterHandler will handle decoding of JSON pakcages for letter sending and deliver a result to the frontend
