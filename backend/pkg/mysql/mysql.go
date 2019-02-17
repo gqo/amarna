@@ -81,11 +81,12 @@ func (d *datastore) ValidateUser(username string) (bool, error) {
 
 func (d *datastore) GetLetters(leftUsername, rightUsername string) ([]entity.Letter, error) {
 	rows, err := d.db.Query(`
-		SELECT ts, body
+		SELECT leftUser, ts, body
 		FROM Letter
-		WHERE leftUser=?
-		AND rightUser=?
+		WHERE (leftUser=? AND rightUser=?)
+		OR (rightUser=? AND leftUser=?)
 		ORDER BY ts ASC`,
+		leftUsername, rightUsername,
 		leftUsername, rightUsername)
 	if err != nil {
 		return nil, err
@@ -97,9 +98,7 @@ func (d *datastore) GetLetters(leftUsername, rightUsername string) ([]entity.Let
 	for rows.Next() {
 		var Current entity.Letter
 
-		Current.From = leftUsername
-
-		err = rows.Scan(&Current.Timestamp, &Current.Body)
+		err = rows.Scan(&Current.From, &Current.Timestamp, &Current.Body)
 		if err != nil {
 			return nil, err
 		}
