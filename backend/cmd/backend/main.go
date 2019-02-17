@@ -63,13 +63,13 @@ func main() {
 }
 
 func rootHandler(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
+	enableCors(&w)
 	fmt.Fprintf(w, "Hello world!")
 }
 
 //ValidateUserHandler will handle decoding of JSON packages for user validation and deliver a result to the frontend
 func ValidateUserHandler(w http.ResponseWriter, r *http.Request) {
-    enableCors(&w)
+	enableCors(&w)
 	username := "gqo"
 	isValid, ValidateUserErr := db.ValidateUser(username)
 
@@ -134,5 +134,46 @@ func GetPairingsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func enableCors(w *http.ResponseWriter) {
-    (*w).Header().Set("Access-Control-Allow-Origin", "*")
+	(*w).Header().Set("Access-Control-Allow-Origin", "*")
+}
+
+//SendLetterHandler will handle decoding of JSON pakcages for letter sending and deliver a result to the frontend
+func SendLetterHandler(w http.ResponseWriter, r *http.Request) {
+	lUser := "gqo"
+	rUser := "amvasquez"
+	body := "THIS IS THE TEXT"
+	SendLetterErr := db.SendLetter(lUser, rUser, body)
+
+	if SendLetterErr != nil {
+		response = entity.Response{
+			Error: SendLetterErr,
+		}
+	} else {
+		response = entity.Response{}
+	}
+	respMarsh, marshErr := json.Marshal(response)
+	if marshErr != nil {
+		fmt.Println("There has been a marshalling error:", marshErr)
+	}
+	fmt.Fprintf(w, string(respMarsh))
+}
+
+//GetLanguagesHandler will handle decoding of JSON pakcages for language retreival and deliver a result to the frontend
+func GetLanguagesHandler(w http.ResponseWriter, r *http.Request) {
+	allLanguages, GetLanguagesErr := db.GetLanguages()
+
+	if GetLanguagesErr != nil {
+		response = entity.Response{
+			Error: GetLanguagesErr,
+		}
+	} else {
+		response = entity.Response{
+			Languages: allLanguages,
+		}
+	}
+	respMarsh, marshErr := json.Marshal(response)
+	if marshErr != nil {
+		fmt.Println("There has been a marshalling error:", marshErr)
+	}
+	fmt.Fprintf(w, string(respMarsh))
 }
