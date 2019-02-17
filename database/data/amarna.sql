@@ -22,7 +22,7 @@ CREATE Table Pairing
     rightUser varchar(64),
     leftUserLang varchar(32),
     rightUserLang varchar(32),
-    PRIMARY KEY (leftUser, rightUser),
+    PRIMARY KEY (leftUser, rightUser, leftUserLang, rightUserLang),
     FOREIGN KEY (leftUser) REFERENCES User(username) on delete cascade,
     FOREIGN KEY (rightUser) REFERENCES User(username) on delete cascade,
     FOREIGN KEY (leftUserLang) REFERENCES Language(lang_name),
