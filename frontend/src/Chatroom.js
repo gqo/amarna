@@ -44,6 +44,27 @@ export class Chatroom extends Component {
         });
 	}
 
+    updateChat = () => {
+        let url = PROPS['base'] + PROPS['getMessages'];
+        url = url.replace('{1}', sessionStorage.getItem('username'));
+        url = url.replace('{2}', this.props.match.params['user'])
+        fetch(url, {
+            method: 'GET',
+            mode: 'cors',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then((response) => {
+            return response.json();
+        }).then((json) => {
+            this.setState({
+                chats: json['letters']
+            })
+        }).catch((error) => {
+            console.log(error);
+        });
+    }
+
     updateLesson = (user) => {
         let url = PROPS['base'] + PROPS['getLesson'];
         url = url.replace('{1}', sessionStorage.getItem('username'));
@@ -95,7 +116,7 @@ export class Chatroom extends Component {
 	handleSubmit = (event) => {
 		event.preventDefault();
         let body = JSON.stringify({ 
-            "letter": this.state['message'],
+            "body": this.state['message'],
             "leftUsername": sessionStorage.getItem('username'),
             "rightUsername": this.props.match.params['user']
         })
@@ -111,7 +132,7 @@ export class Chatroom extends Component {
         }).then((response) => {
             return response.json();
         }).then((json) => {
-            //
+            this.updateChat()
         }).catch((error) => {
             console.log(error);
         });
