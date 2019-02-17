@@ -47,10 +47,7 @@ func main() {
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/ValidateUser", ValidateUserHandler)
 	http.HandleFunc("/GetPairings", GetPairingsHandler)
-	http.HandleFunc("/GetMatches", GetMatchesHandler)
-	http.HandleFunc("/GetSection", GetSectionHandler)
-	http.HandleFunc("/GetNextUncompletedSection", GetNextUncompletedSectionHandler)
-
+	http.HandleFunc("/GetLetters", GetLettersHandler)
 	log.Println("Starting Amarna backend...")
 	// for {
 	// 	conn, connErr := l.Accept()
@@ -69,9 +66,8 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//ValidateUserHandler will handle decoding of JSON packages for user validation
+//ValidateUserHandler will handle decoding of JSON packages for user validation and deliver a result to the frontend
 func ValidateUserHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "ValidateUser")
 	username := "gqo"
 	isValid, ValidateUserErr := db.ValidateUser(username)
 
@@ -91,9 +87,31 @@ func ValidateUserHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(respMarsh))
 }
 
-//GetPairingsHandler will handle decoding of JSON pakcages for pairing retreival
+//GetLettersHandler will handle decoding of JSON pakcages for letter retreival and deliver a result to the frontend
+func GetLettersHandler(w http.ResponseWriter, r *http.Request) {
+	lUser := "gqo"
+	rUser := "amvasquez"
+
+	allLetters, GetLettersErr := db.GetLetters(lUser, rUser)
+
+	if GetLettersErr != nil {
+		response = entity.Response{
+			Error: GetLettersErr,
+		}
+	} else {
+		response = entity.Response{
+			Letters: allLetters,
+		}
+	}
+	respMarsh, marshErr := json.Marshal(response)
+	if marshErr != nil {
+		fmt.Println("There has been a marshalling error:", marshErr)
+	}
+	fmt.Fprintf(w, string(respMarsh))
+}
+
+//GetPairingsHandler will handle decoding of JSON pakcages for pairing retreival and deliver a result to the frontend
 func GetPairingsHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "GetPairings")
 	username := "gqo"
 	allUserPairs, GetPairingsErr := db.GetPairings(username)
 
@@ -111,8 +129,4 @@ func GetPairingsHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("There has been a marshalling error:", marshErr)
 	}
 	fmt.Fprintf(w, string(respMarsh))
-}
-
-//GetSectionHandler will handle decoding of JSON pakcages for section retreival
-func GetSectionHandler(w http.ResponseWriter, r *http.Request) {
 }
