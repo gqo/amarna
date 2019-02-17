@@ -54,10 +54,3 @@ type GetNextUncompletedSection struct {
 	TopicTitle    string
 	TopicLang     string
 }
-
-//JSONResponse will the the JSON used to respond to the frontend
-type JSONResponse struct {
-	Error   error
-	Boolean *bool
-	Section *entity.Section
-}
