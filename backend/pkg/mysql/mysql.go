@@ -154,18 +154,23 @@ func (d *datastore) SendLetter(leftUsername, rightUsername, body string) error {
 
 func (d *datastore) getCurrentLesson(leftUsername, rightUsername string) (*entity.Lesson, error) {
 	row := d.db.QueryRow(`
-		SELECT MIN(leftCount, rightCount)
+		SELECT leftCount, rightCount
 		FROM Pairing
 		WHERE leftUser=?
 		AND rightUser=?`,
 		leftUsername, rightUsername)
 
-	var referenceID int64
+	var leftCount, rightCount, referenceID int64
 
-	err := row.Scan(&referenceID)
+	err := row.Scan(&leftCount, &rightCount)
 
 	switch {
 	case err == nil:
+		if leftCount < rightCount {
+			referenceID = leftCount
+		} else {
+			referenceID = rightCount
+		}
 		row := d.db.QueryRow(`
 			SELECT title, section, description
 			FROM Lesson
