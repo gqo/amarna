@@ -100,8 +100,10 @@ func ValidateUserHandler(w http.ResponseWriter, r *http.Request) {
 //GetLettersHandler will handle decoding of JSON pakcages for letter retreival and deliver a result to the frontend
 func GetLettersHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	lUser := "gqo"
-	rUser := "amvasquez"
+
+    urlParams := r.URL.Query()
+	lUser := urlParams["lUser"][0]
+	rUser := urlParams["rUser"][0]
 
 	allLetters, GetLettersErr := db.GetLetters(lUser, rUser)
 
@@ -222,8 +224,11 @@ func GetCurrentLessonHandler(w http.ResponseWriter, r *http.Request) {
 //IncrementLessonHandler will handle decoding of JSON pakcages for lesson incrementation and deliver a result to the frontend
 func IncrementLessonHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	lUser := "gqo"
-	rUser := "amvasquez"
+
+	urlParams := r.URL.Query()
+	lUser := urlParams["lUser"][0]
+	rUser := urlParams["rUser"][0]
+
 	IncrementLessonErr := db.IncrementLesson(lUser, rUser)
 
 	if IncrementLessonErr != nil {
@@ -243,9 +248,12 @@ func IncrementLessonHandler(w http.ResponseWriter, r *http.Request) {
 //RegisterUserHandler will handle decoding of JSON pakcages for user registration and deliver a result to the frontend
 func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	username := "Andrew"
-	knownLang := "Chinese"
-	learnLang := "Spanish"
+
+	urlParams := r.URL.Query()
+	username := urlParams["username"][0]
+	knownLang := urlParams["knownLang"][0]
+	learnLang := urlParams["learnLang"][0]
+
 	RegisterUserErr := db.RegisterUser(username, knownLang, learnLang)
 
 	if RegisterUserErr != nil {
