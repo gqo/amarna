@@ -26,7 +26,7 @@ type Lesson struct {
 	ID      int64  `json:"id"`
 	Title   string `json:"title"`
 	Section string `json:"section"`
-	Desc    string `json:"desc"`
+	Desc    string `json:"description"`
 }
 
 // Response will be the JSON sent as a response to the frontend
