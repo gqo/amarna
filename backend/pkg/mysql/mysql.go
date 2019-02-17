@@ -3,6 +3,7 @@ package mysql
 import (
 	"database/sql"
 	"log"
+	"time"
 
 	entity "../entities"
 
@@ -15,10 +16,11 @@ type Datastore interface {
 	// Version 2
 	// High priority
 	ValidateUser(username string) (bool, error)
-	GetLetters(leftUsername, rightUsername string) (interface{}, error)
+	GetLetters(leftUsername, rightUsername string) ([]entity.Letter, error)
 	GetPairings(username string) ([]string, error)
+	SendLetter(leftUsername, rightUsername, body string) error
 	// Medium priority
-	GetCurrentLesson(leftUsername, rightUser string) (interface{}, error)
+	GetCurrentLesson(leftUsername, rightUser string) (*entity.Lesson, error)
 	IncrementLesson(leftUsername, rightUsername string) error
 	RegisterUser(username, knownLang, learnLang string) error
 	// Low priority
@@ -93,6 +95,92 @@ func (d *datastore) ValidateUser(username string) (bool, error) {
 	}
 }
 
+func (d *datastore) GetLetters(leftUsername, rightUsername string) ([]entity.Letter, error) {
+	rows, err := d.db.Query(`
+		SELECT ts, body
+		FROM Letter
+		WHERE leftUser=?
+		AND rightUser=?
+		ORDER BY ts ASC`,
+		leftUsername, rightUsername)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var letters []entity.Letter
+
+	for rows.Next() {
+		var Current entity.Letter
+
+		Current.From = leftUsername
+
+		err = rows.Scan(&Current.Timestamp, &Current.Body)
+		if err != nil {
+			return nil, err
+		}
+
+		letters = append(letters, Current)
+	}
+
+	return letters, nil
+}
+
+func (d *datastore) GetPairings(username string) ([]string, error) {
+	rows, err := d.db.Query(`
+		SELECT rightUser
+		FROM Pairing
+		WHERE leftUser=?`,
+		username)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var pairings []string
+
+	for rows.Next() {
+		var Current string
+
+		err = rows.Scan(&Current)
+		if err != nil {
+			return nil, err
+		}
+
+		pairings = append(pairings, Current)
+	}
+
+	return pairings, nil
+}
+
+func (d *datastore) SendLetter(leftUsername, rightUsername, body string) error {
+	referenceID := 1 // Replace later
+
+	_, err := d.db.Exec(`
+		INSERT INTO Letter
+		(leftUser, rightUser, referenceID, ts, body)
+		VALUES
+		(?,?,?,?,?)`,
+		leftUsername, rightUsername, referenceID, time.Now(), body)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (d *datastore) GetCurrentLesson(leftUsername, rightUsername string) (*entity.Lesson, error) {
+	return nil, nil
+}
+
+func (d *datastore) IncrementLesson(leftUsername, rightUsername string) error {
+	return nil
+}
+
+func (d *datastore) RegisterUser(username, knownLang, learnLang string) error {
+	return nil
+}
+
 func (d *datastore) GetLanguages() ([]string, error) {
 	rows, err := d.db.Query(`
 		SELECT lang_name
@@ -116,150 +204,4 @@ func (d *datastore) GetLanguages() ([]string, error) {
 	}
 
 	return languages, nil
-}
-
-func (d *datastore) GetTopics(language string) ([]string, error) {
-	rows, err := d.db.Query(`
-		SELECT title
-		FROM Topic
-		WHERE lang_name=?`,
-		language)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var topics []string
-
-	for rows.Next() {
-		var Current string
-
-		err = rows.Scan(&Current)
-		if err != nil {
-			return nil, err
-		}
-
-		topics = append(topics, Current)
-	}
-
-	return topics, nil
-}
-
-func (d *datastore) insertKnownLang(username, knownLang string) error {
-	_, err := d.db.Exec(`
-		INSERT INTO KnownLang
-		(username, lang_name)
-		VALUES
-		(?,?)`,
-		username, knownLang)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (d *datastore) UpdateKnownLangs(username string, knownLangs []string) error {
-	_, err := d.db.Exec(`
-		DELETE FROM KnownLang
-		WHERE username=?`,
-		username)
-	if err != nil {
-		return err
-	}
-
-	for i := range knownLangs {
-		err = d.insertKnownLang(username, knownLangs[i])
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (d *datastore) insertLearnLang(username, learnLang string) error {
-	_, err := d.db.Exec(`
-		INSERT INTO LearnLang
-		(username, lang_name)
-		VALUES
-		(?,?)`,
-		username, learnLang)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (d *datastore) UpdateLearnLangs(username string, learnLangs []string) error {
-	_, err := d.db.Exec(`
-		DELETE FROM LearnLang
-		WHERE username=?`,
-		username)
-	if err != nil {
-		return err
-	}
-
-	for i := range learnLangs {
-		err = d.insertLearnLang(username, learnLangs[i])
-		if err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-func (d *datastore) InsertPairing(leftUsername, rightUsername, leftUserLang, rightUserLang string) error {
-	_, err := d.db.Exec(`
-		INSERT INTO Pairing
-		(leftUSer, rightUser, leftUserLang, rightUserLang)
-		VALUES
-		(?,?,?,?)`,
-		leftUsername, rightUsername, leftUserLang, rightUserLang)
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (d *datastore) GetPairings(username string) ([]entity.Pairing, error) {
-	rows, err := d.db.Query(`
-		SELECT DISTINCT username
-		FROM Pairing
-		WHERE leftUser=?`,
-		username)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-
-	var pairings []entity.Pairing
-
-	for rows.Next() {
-		var Current entity.Pairing
-
-		err = rows.Scan(&Current.RightUser)
-		if err != nil {
-			return nil, err
-		}
-
-		pairings = append(pairings, Current)
-	}
-
-	return pairings, nil
-}
-
-func (d *datastore) GetMatches(user entity.User) ([]entity.User, error) {
-	return nil, nil
-}
-
-func (d *datastore) GetSection(topicTitle, topicLang string, week int) (*entity.Section, error) {
-	return nil, nil
-}
-
-func (d *datastore) GetNextUncompletedSection(leftUsername, rightUsername, topicTitle, topicLang string) (*entity.Section, error) {
-	return nil, nil
 }
