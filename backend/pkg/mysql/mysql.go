@@ -25,22 +25,6 @@ type Datastore interface {
 	RegisterUser(username, knownLang, learnLang string) error
 	// Low priority
 	GetLanguages() ([]string, error)
-
-	// Version 1
-	// High priority
-	// ValidateUser(username string) (bool, error)  // Done
-	// GetLanguages() ([]string, error)             // Done
-
-	// // Medium priority
-	// GetMatches(user entity.User) ([]entity.User, error)
-	// InsertPairing(leftUsername, rightUsername, leftUserLang, rightUserLang string) error // Done                            // Done
-	// // Low priority
-	// UpdateKnownLangs(username string, knownLangs []string) error // Done
-	// UpdateLearnLangs(username string, learnLangs []string) error // Done
-	// // Takes a complete user's data
-	// GetTopics(language string) ([]string, error) // Done
-	// GetSection(topicTitle, topicLang string, week int) (*entity.Section, error)
-	// GetNextUncompletedSection(leftUsername, rightUsername, topicTitle, topicLang string) (*entity.Section, error)
 }
 
 // datastore is a wrapper for the mysql db connection
@@ -169,15 +153,107 @@ func (d *datastore) SendLetter(leftUsername, rightUsername, body string) error {
 	return nil
 }
 
+func (d *datastore) getCurrentLesson(leftUsername, rightUsername string) (*entity.Lesson, error) {
+	row := d.db.QueryRow(`
+		SELECT MIN(leftCount, rightCount)
+		FROM Pairing
+		WHERE leftUser=?
+		AND rightUser=?`,
+		leftUsername, rightUsername)
+
+	var referenceID int64
+
+	err := row.Scan(&referenceID)
+
+	switch {
+	case err == nil:
+		row := d.db.QueryRow(`
+			SELECT title, section, description
+			FROM Lesson
+			WHERE referenceID=?`,
+			referenceID)
+
+		var title, section, description string
+
+		err := row.Scan(&title, &section, &description)
+
+		switch {
+		case err == nil:
+			return &entity.Lesson{
+				ID:      referenceID,
+				Title:   title,
+				Section: section,
+				Desc:    description,
+			}, nil
+		default:
+			return nil, err
+		}
+	default:
+		return nil, err
+	}
+}
+
 func (d *datastore) GetCurrentLesson(leftUsername, rightUsername string) (*entity.Lesson, error) {
-	return nil, nil
+	return d.getCurrentLesson(leftUsername, rightUsername)
 }
 
 func (d *datastore) IncrementLesson(leftUsername, rightUsername string) error {
+	row := d.db.QueryRow(`
+		SELECT leftCount, rightCount
+		FROM Pairing
+		WHERE leftUser=?
+		AND rightUser=?`,
+		leftUsername, rightUsername)
+
+	var leftCount, rightCount int32
+
+	err := row.Scan(&leftCount, &rightCount)
+
+	switch {
+	case err == nil:
+		if leftCount <= rightCount {
+			leftCount++
+
+			_, err := d.db.Exec(`
+				UPDATE Pairing
+				SET leftCount=? AND rightCount=?
+				WHERE leftUser=? AND rightUser=?`,
+				leftCount, rightCount,
+				leftUsername, rightUsername)
+			if err != nil {
+				return err
+			}
+
+			_, err = d.db.Exec(`
+				UPDATE Pairing
+				SET rightCount=? AND leftCount=?
+				WHERE rightUser=? AND leftUser=?`,
+				leftCount, rightCount,
+				leftUsername, rightUsername)
+			if err != nil {
+				return err
+			}
+
+			return nil
+		}
+	default:
+		return err
+	}
+
 	return nil
 }
 
 func (d *datastore) RegisterUser(username, knownLang, learnLang string) error {
+	_, err := d.db.Exec(`
+		INSERT INTO User
+		(username, knownLang, learnLang)
+		VALUES
+		(?,?,?)`,
+		username, knownLang, learnLang)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

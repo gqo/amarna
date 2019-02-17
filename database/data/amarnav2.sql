@@ -23,7 +23,7 @@ CREATE TABLE Pairing
     leftUser VARCHAR(64),
     rightUser VARCHAR(64),
     leftCount INT DEFAULT 1,
-    rightCOUNT INT DEFAULT 1,
+    rightCount INT DEFAULT 1,
     PRIMARY KEY (leftUser, rightUser),
     FOREIGN KEY (leftUser) REFERENCES User(username) ON DELETE CASCADE,
     FOREIGN KEY (rightUser) REFERENCES User(username) ON DELETE CASCADE
