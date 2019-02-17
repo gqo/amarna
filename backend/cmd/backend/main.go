@@ -175,6 +175,7 @@ func InsertPairingHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println(InsertPairingJSON)
 	insertErr := db.InsertPairing(InsertPairingJSON.LeftUsername, InsertPairingJSON.RightUsername, InsertPairingJSON.LeftUserLang, InsertPairingJSON.RightUserLang)
+
 }
 
 //GetPairingsHandler will handle decoding of JSON pakcages for pairing retreival
