@@ -78,6 +78,6 @@ type Response struct {
 	Pairings  []string `json:"pairings"`
 	Validate  bool     `json:"validate"`
 	Error     error    `json:"error"`
-	Lessons   []Lesson `json:"lessons"`
+	Lessons   Lesson   `json:"lesson"`
 	Languages []string `json:"languages"`
 }
