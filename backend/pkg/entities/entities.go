@@ -69,7 +69,7 @@ type Lesson struct {
 	ID      int64  `json:"id"`
 	Title   string `json:"title"`
 	Section string `json:"section"`
-	Dest    string `json:"dest"`
+	Desc    string `json:"desc"`
 }
 
 // Prepare will be the JSON sent as a response to the frontend
