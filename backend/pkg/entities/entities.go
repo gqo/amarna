@@ -21,16 +21,15 @@ func (t JSONTime) MarshalJSON() ([]byte, error) {
 	return []byte(ts), nil
 }
 
-// Letter defines the letters that have been sent between users
-type Letter struct {
-	From       string   `json:"from"`
-	To         string   `json:"to"`
-	TopicTitle string   `json:"topic_title"`
-	TopicLang  string   `json:"topic_lang"`
-	Week       int32    `json:"week"`
-	Timestamp  JSONTime `json:"timestamp"`
-	Body       string   `json:"body"`
-}
+// type Letter struct {
+// 	From       string   `json:"from"`
+// 	To         string   `json:"to"`
+// 	TopicTitle string   `json:"topic_title"`
+// 	TopicLang  string   `json:"topic_lang"`
+// 	Week       int32    `json:"week"`
+// 	Timestamp  JSONTime `json:"timestamp"`
+// 	Body       string   `json:"body"`
+// }
 
 // Pairing defines pairs of users that have matched
 type Pairing struct {
@@ -56,4 +55,29 @@ type Section struct {
 // Language defines a language handled by Amarna
 type Language struct {
 	LangName string `json:"lang_name"`
+}
+
+// Letter defines the letters that have been sent between users
+type Letter struct {
+	Body      string   `json:"body"`
+	Timestamp JSONTime `json:"timestamp"`
+	From      string   `json:"from"`
+}
+
+// Lesson defines the characters of a lesson
+type Lesson struct {
+	ID      int64  `json:"id"`
+	Title   string `json:"title"`
+	Section string `json:"section"`
+	Desc    string `json:"desc"`
+}
+
+// Response will be the JSON sent as a response to the frontend
+type Response struct {
+	Letters   []Letter `json:"letters"`
+	Pairings  []string `json:"pairings"`
+	Validate  bool     `json:"validate"`
+	Error     error    `json:"error"`
+	Lessons   Lesson   `json:"lesson"`
+	Languages []string `json:"languages"`
 }
