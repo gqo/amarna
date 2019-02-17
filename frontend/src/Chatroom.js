@@ -12,7 +12,12 @@ export class Chatroom extends Component {
 
 		this.state = {
 			chats: [],
-			message: ""
+			message: "",
+            lesson: {
+                title: "",
+                section: "",
+                description: ""
+            }
 		}
 	}
 
