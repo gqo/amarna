@@ -1,8 +1,8 @@
 {
     "base": "http://localhost:8080",
     "validate": "/ValidateUser?username={}",
-    "getChats": "/Pairings?username={}",
-    "getMessages": "/Letters?leftUsername={1}&rightUsername={2}",
+    "getChats": "/GetPairings?username={}",
+    "getMessages": "/GetLetters?leftUsername={1}&rightUsername={2}",
     "submit": "/SendLetter",
     "register": "/RegisterUser?username={1}&knownLang={2}&learnLang={3}",
     "getLesson": "/GetLesson?leftUsername={1}&rightUsername={2}",

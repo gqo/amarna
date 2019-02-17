@@ -43,13 +43,14 @@ ul {
 pre {
     margin: 0;
     font: 1em sans-serif;
+    white-space: pre-wrap;
 }
 
 .message {
     background: lightgray;
     padding: 10px;
     border-radius: 20px 20px 20px 5px;
-    margin-top: 10px;
+    margin-top: 45px;
 }
 
 .user-message {
