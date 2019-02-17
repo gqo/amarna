@@ -157,21 +157,21 @@ func SendLetterHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 
 	decoder := json.NewDecoder(r.Body)
-	data := struct {
+	Data := struct {
 		LeftUsername  string `json:"leftUsername"`
 		RightUsername string `json:"rightUsername"`
 		Body          string `json:"body"`
 	}{}
-	err := decoder.Decode(&data)
+	err := decoder.Decode(&Data)
 	if err != nil {
 		log.Println(err)
 	}
 
-	log.Println("data:", data)
+	log.Println("data:", Data)
 
-	lUser := data.LeftUsername
-	rUser := data.RightUsername
-	body := data.Body
+	lUser := Data.LeftUsername
+	rUser := Data.RightUsername
+	body := Data.Body
 
 	SendLetterErr := db.SendLetter(lUser, rUser, body)
 	if SendLetterErr != nil {
