@@ -7,3 +7,10 @@ http://3.86.84.204:3000/
 ## Backend
 * Go
 * Go-SQL-Driver/MySQL
+
+# Made by:
+Andrea Vasquez
+Andrew Chen
+Graeme Ferguson
+Justin Wang
+Reece Rodriguez
