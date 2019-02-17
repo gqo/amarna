@@ -59,25 +59,25 @@ type Language struct {
 
 // Letter defines the letters that have been sent between users
 type Letter struct {
-	Body      string
-	Timestamp JSONTime
-	From      string
+	Body      string   `json:"body"`
+	Timestamp JSONTime `json:"timestamp"`
+	From      string   `json:"from"`
 }
 
 // Lesson defines the characters of a lesson
 type Lesson struct {
-	ID      int64
-	Title   string
-	Section string
-	Dest    string
+	ID      int64  `json:"id"`
+	Title   string `json:"title"`
+	Section string `json:"section"`
+	Dest    string `json:"dest"`
 }
 
 // Prepare will be the JSON sent as a response to the frontend
 type Prepare struct {
-	Letters   []Letter
-	Pairings  []string
-	validate  bool
-	Error     error
-	Lessons   []Lesson
-	Languages []string
+	Letters   []Letter `json:"letters"`
+	Pairings  []string `json:"pairings"`
+	Validate  bool     `json:"validate"`
+	Error     error    `json:"error"`
+	Lessons   []Lesson `json:"lessons"`
+	Languages []string `json:"languages"`
 }
