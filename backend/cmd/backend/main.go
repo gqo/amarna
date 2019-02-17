@@ -237,7 +237,7 @@ func GetCurrentLessonHandler(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, string(respMarsh))
 }
 
-//IncrementLessonHandler will handle decoding of JSON pakcages for lesson incrementation and deliver a result to the frontend
+//IncrementLessonHandler will handle decoding of JSON packages for lesson incrementation and deliver a result to the frontend
 func IncrementLessonHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 

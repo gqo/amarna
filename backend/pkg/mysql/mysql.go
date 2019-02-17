@@ -222,9 +222,9 @@ func (d *datastore) IncrementLesson(leftUsername, rightUsername string) error {
 
 			_, err := d.db.Exec(`
 				UPDATE Pairing
-				SET leftCount=? AND rightCount=?
+				SET leftCount=?
 				WHERE leftUser=? AND rightUser=?`,
-				leftCount, rightCount,
+				leftCount,
 				leftUsername, rightUsername)
 			if err != nil {
 				return err
@@ -232,9 +232,9 @@ func (d *datastore) IncrementLesson(leftUsername, rightUsername string) error {
 
 			_, err = d.db.Exec(`
 				UPDATE Pairing
-				SET rightCount=? AND leftCount=?
+				SET rightCount=?
 				WHERE rightUser=? AND leftUser=?`,
-				leftCount, rightCount,
+				leftCount,
 				leftUsername, rightUsername)
 			if err != nil {
 				return err
