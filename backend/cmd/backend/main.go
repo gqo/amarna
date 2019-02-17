@@ -75,7 +75,10 @@ func rootHandler(w http.ResponseWriter, r *http.Request) {
 //ValidateUserHandler will handle decoding of JSON packages for user validation and deliver a result to the frontend
 func ValidateUserHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	username := "gqo"
+
+	urlParams := r.URL.Query()
+	username := urlParams["username"][0]
+
 	isValid, ValidateUserErr := db.ValidateUser(username)
 
 	if ValidateUserErr != nil {
