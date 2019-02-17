@@ -91,6 +91,7 @@ func ValidateUserHandler(w http.ResponseWriter, r *http.Request) {
 
 //GetLettersHandler will handle decoding of JSON pakcages for letter retreival and deliver a result to the frontend
 func GetLettersHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	lUser := "gqo"
 	rUser := "amvasquez"
 
@@ -114,6 +115,7 @@ func GetLettersHandler(w http.ResponseWriter, r *http.Request) {
 
 //GetPairingsHandler will handle decoding of JSON pakcages for pairing retreival and deliver a result to the frontend
 func GetPairingsHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	username := "gqo"
 	allUserPairs, GetPairingsErr := db.GetPairings(username)
 
@@ -139,6 +141,7 @@ func enableCors(w *http.ResponseWriter) {
 
 //SendLetterHandler will handle decoding of JSON pakcages for letter sending and deliver a result to the frontend
 func SendLetterHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	lUser := "gqo"
 	rUser := "amvasquez"
 	body := "THIS IS THE TEXT"
@@ -160,6 +163,7 @@ func SendLetterHandler(w http.ResponseWriter, r *http.Request) {
 
 //GetLanguagesHandler will handle decoding of JSON pakcages for language retreival and deliver a result to the frontend
 func GetLanguagesHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
 	allLanguages, GetLanguagesErr := db.GetLanguages()
 
 	if GetLanguagesErr != nil {
