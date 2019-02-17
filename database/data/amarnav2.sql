@@ -82,7 +82,11 @@ INSERT INTO Lesson
 VALUES
     ("INTRODUCTION","NAMES","Say your name!"), -- 1
     ("INTRODUCTION","LOCATION","Say where you're from!"), -- 2
-    ("HOBBIES","MUSIC","Say if you like music!"); -- 3
+    ("HOBBIES","MUSIC","Say if you like music!"), -- 3
+    ("title4","section1","desc1"),
+    ("title4","section2","desc1"),
+    ("title5","section1","desc1"),
+    ("title6","section1","desc1");
 
 INSERT INTO Letter
     (leftUser, rightUser, referenceID, ts, body)
