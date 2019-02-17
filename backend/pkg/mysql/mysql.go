@@ -215,8 +215,10 @@ func (d *datastore) IncrementLesson(leftUsername, rightUsername string) error {
 
 	switch {
 	case err == nil:
+		log.Println("LeftCount:", leftCount, "\nRightCount:", rightCount)
 		if leftCount <= rightCount {
 			leftCount++
+			log.Println("New left count:", leftCount)
 
 			_, err := d.db.Exec(`
 				UPDATE Pairing
