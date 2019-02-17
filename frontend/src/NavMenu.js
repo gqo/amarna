@@ -7,10 +7,6 @@ import {
     Nav,
     NavItem,
     NavLink,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem,
 } from 'reactstrap'
 
 export default class NavMenu extends Component {
@@ -32,35 +28,13 @@ export default class NavMenu extends Component {
 
     render () {
         return (
-            <div>
+            <div className="nav-header">
                 <Navbar color="dark" dark expand="md">
-                    <NavbarBrand href="/">reactstrap</NavbarBrand>
+                    <NavbarBrand href="/">Amarna</NavbarBrand>
                     <NavbarToggler onClick={this.toggle} />
                     <Collapse isOpen={this.state.isOpen} navbar>
                         <Nav className="ml-auto" navbar>
-                            <NavItem>
-                                <NavLink href="/components/">Components</NavLink>
-                            </NavItem>
-                            <NavItem>
-                                <NavLink href="https://github.com/reactstrap/reactstrap">GitHub</NavLink>
-                            </NavItem>
-                                <UncontrolledDropdown nav inNavbar>
-                            <DropdownToggle nav caret>
-                                Options
-                            </DropdownToggle>
-                                <DropdownMenu right>
-                                    <DropdownItem>
-                                        Option 1
-                                    </DropdownItem>
-                                    <DropdownItem>
-                                        Option 2
-                                    </DropdownItem>
-                                <DropdownItem divider />
-                                    <DropdownItem>
-                                        Reset
-                                    </DropdownItem>
-                                </DropdownMenu>
-                            </UncontrolledDropdown>
+                            {(sessionStorage.getItem('username') === null)? <React.Fragment><NavItem><NavLink href="/profile">Register</NavLink> </NavItem><NavItem><NavLink href="/login">Login</NavLink></NavItem></React.Fragment> : <React.Fragment><NavItem><NavLink href="/chats">Chats</NavLink></NavItem><NavItem><NavLink href="/logout">Logout</NavLink></NavItem></React.Fragment>}
                         </Nav>
                     </Collapse>
                 </Navbar>

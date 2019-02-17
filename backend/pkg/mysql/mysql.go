@@ -202,7 +202,7 @@ func (d *datastore) IncrementLesson(leftUsername, rightUsername string) error {
 		SELECT leftCount, rightCount
 		FROM Pairing
 		WHERE leftUser=?
-		AND rightUser=?`.
+		AND rightUser=?`,
 		leftUsername, rightUsername)
 
 	var leftCount, rightCount int32

@@ -4,10 +4,10 @@ import NavMenu from './NavMenu'
 export class Layout extends Component {
     render () {
         return (
-            <div>
+            <React.Fragment>
                 <NavMenu />
                 {this.props.children}
-            </div>
+            </React.Fragment>
         );
     }
 }
