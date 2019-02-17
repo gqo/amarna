@@ -101,9 +101,9 @@ func ValidateUserHandler(w http.ResponseWriter, r *http.Request) {
 func GetLettersHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 
-    urlParams := r.URL.Query()
-	lUser := urlParams["lUser"][0]
-	rUser := urlParams["rUser"][0]
+	urlParams := r.URL.Query()
+	lUser := urlParams["leftUsername"][0]
+	rUser := urlParams["rightUsername"][0]
 
 	allLetters, GetLettersErr := db.GetLetters(lUser, rUser)
 
@@ -155,11 +155,25 @@ func enableCors(w *http.ResponseWriter) {
 //SendLetterHandler will handle decoding of JSON pakcages for letter sending and deliver a result to the frontend
 func SendLetterHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	lUser := "gqo"
-	rUser := "amvasquez"
-	body := "THIS IS THE TEXT"
-	SendLetterErr := db.SendLetter(lUser, rUser, body)
 
+	decoder := json.NewDecoder(r.Body)
+	data := struct {
+		LeftUsername  string `json:"leftUsername"`
+		RightUsername string `json:"rightUsername"`
+		Body          string `json:"body"`
+	}{}
+	err := decoder.Decode(&data)
+	if err != nil {
+		log.Println(err)
+	}
+
+	log.Println("data:", data)
+
+	lUser := data.LeftUsername
+	rUser := data.RightUsername
+	body := data.Body
+
+	SendLetterErr := db.SendLetter(lUser, rUser, body)
 	if SendLetterErr != nil {
 		response = entity.Response{
 			Error: SendLetterErr,
@@ -177,6 +191,7 @@ func SendLetterHandler(w http.ResponseWriter, r *http.Request) {
 //GetLanguagesHandler will handle decoding of JSON pakcages for language retreival and deliver a result to the frontend
 func GetLanguagesHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
+
 	allLanguages, GetLanguagesErr := db.GetLanguages()
 
 	if GetLanguagesErr != nil {
@@ -200,8 +215,8 @@ func GetCurrentLessonHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 
 	urlParams := r.URL.Query()
-	lUser := urlParams["lUser"][0]
-	rUser := urlParams["rUser"][0]
+	lUser := urlParams["leftUsername"][0]
+	rUser := urlParams["rightUsername"][0]
 
 	lessonPtr, GetCurrentLessonErr := db.GetCurrentLesson(lUser, rUser)
 
@@ -226,8 +241,8 @@ func IncrementLessonHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
 
 	urlParams := r.URL.Query()
-	lUser := urlParams["lUser"][0]
-	rUser := urlParams["rUser"][0]
+	lUser := urlParams["leftUsername"][0]
+	rUser := urlParams["rightUsername"][0]
 
 	IncrementLessonErr := db.IncrementLesson(lUser, rUser)
 
