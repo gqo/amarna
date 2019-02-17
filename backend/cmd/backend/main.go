@@ -270,6 +270,8 @@ func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
 	knownLang := urlParams["knownLang"][0]
 	learnLang := urlParams["learnLang"][0]
 
+	log.Println("User:", username, "\nKnownLang:", knownLang, "\nLearnLang:", learnLang)
+
 	RegisterUserErr := db.RegisterUser(username, knownLang, learnLang)
 
 	if RegisterUserErr != nil {
