@@ -7,7 +7,6 @@ import (
 	"log"
 	"net/http"
 
-	//jsonstruct "../../pkg/JSON-structs"
 	entity "../../pkg/entities"
 	storage "../../pkg/mysql"
 )
@@ -17,10 +16,7 @@ var db storage.Datastore
 var response entity.Response
 
 func main() {
-	// var port = flag.Int("listen", 8081, "the port number") //default port is 8081
-	var dsn = flag.String("dsn",
-		"admin:basketorangenumberbleacher@tcp(amarna-hacknyu.cfrwuvvgirag.us-east-2.rds.amazonaws.com:3306)/amarna",
-		"sets data source name for backend server")
+	var dsn = flag.String("dsn", "", "sets data source name for backend server")
 
 	flag.Parse()
 
@@ -37,13 +33,6 @@ func main() {
 	}
 	log.Println("Connected to the datastore!")
 
-	// log.Println("Opening client connections on port", *port)
-	// l, listenErr := net.Listen("tcp", ":"+strconv.Itoa(*port))
-	// if listenErr != nil {
-	// 	log.Fatalln("Could not listen to tcp port. Received err:", listenErr)
-	// }
-	// log.Println("Opened client connections!")
-
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/ValidateUser", ValidateUserHandler)
 	http.HandleFunc("/GetLetters", GetLettersHandler)
@@ -55,15 +44,7 @@ func main() {
 	http.HandleFunc("/GetLanguages", GetLanguagesHandler)
 
 	log.Println("Starting Amarna backend...")
-	// for {
-	// 	conn, connErr := l.Accept()
-	// 	if connErr != nil {
-	// 		log.Println(connErr)
-	// 	}
 
-	// 	go handleRequest(conn)
-
-	// }
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
 
