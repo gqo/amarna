@@ -46,8 +46,13 @@ func main() {
 
 	http.HandleFunc("/", rootHandler)
 	http.HandleFunc("/ValidateUser", ValidateUserHandler)
-	http.HandleFunc("/GetPairings", GetPairingsHandler)
 	http.HandleFunc("/GetLetters", GetLettersHandler)
+	http.HandleFunc("/GetPairings", GetPairingsHandler)
+	http.HandleFunc("/SendLetter", SendLetterHandler)
+	http.HandleFunc("/GetCurrentLesson", GetCurrentLessonHandler)
+	http.HandleFunc("/IncrementLesson", IncrementLessonHandler)
+	http.HandleFunc("/RegisterUser", RegisterUserHandler)
+	http.HandleFunc("/GetLanguages", GetLanguagesHandler)
 
 	log.Println("Starting Amarna backend...")
 	// for {
@@ -174,6 +179,72 @@ func GetLanguagesHandler(w http.ResponseWriter, r *http.Request) {
 		response = entity.Response{
 			Languages: allLanguages,
 		}
+	}
+	respMarsh, marshErr := json.Marshal(response)
+	if marshErr != nil {
+		fmt.Println("There has been a marshalling error:", marshErr)
+	}
+	fmt.Fprintf(w, string(respMarsh))
+}
+
+//GetCurrentLessonHandler will handle decoding of JSON pakcages for current lesson retreival and deliver a result to the frontend
+func GetCurrentLessonHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	lUser := "gqo"
+	rUser := "amvasquez"
+	lessonPtr, GetCurrentLessonErr := db.GetCurrentLesson(lUser, rUser)
+
+	if GetCurrentLessonErr != nil {
+		response = entity.Response{
+			Error: GetCurrentLessonErr,
+		}
+	} else {
+		response = entity.Response{
+			Lessons: *lessonPtr,
+		}
+	}
+	respMarsh, marshErr := json.Marshal(response)
+	if marshErr != nil {
+		fmt.Println("There has been a marshalling error:", marshErr)
+	}
+	fmt.Fprintf(w, string(respMarsh))
+}
+
+//IncrementLessonHandler will handle decoding of JSON pakcages for lesson incrementation and deliver a result to the frontend
+func IncrementLessonHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	lUser := "gqo"
+	rUser := "amvasquez"
+	IncrementLessonErr := db.IncrementLesson(lUser, rUser)
+
+	if IncrementLessonErr != nil {
+		response = entity.Response{
+			Error: IncrementLessonErr,
+		}
+	} else {
+		response = entity.Response{}
+	}
+	respMarsh, marshErr := json.Marshal(response)
+	if marshErr != nil {
+		fmt.Println("There has been a marshalling error:", marshErr)
+	}
+	fmt.Fprintf(w, string(respMarsh))
+}
+
+//RegisterUserHandler will handle decoding of JSON pakcages for user registration and deliver a result to the frontend
+func RegisterUserHandler(w http.ResponseWriter, r *http.Request) {
+	enableCors(&w)
+	username := "Andrew"
+	knownLang := "Chinese"
+	learnLang := "Spanish"
+	RegisterUserErr := db.RegisterUser(username, knownLang, learnLang)
+
+	if RegisterUserErr != nil {
+		response = entity.Response{
+			Error: RegisterUserErr,
+		}
+	} else {
+		response = entity.Response{}
 	}
 	respMarsh, marshErr := json.Marshal(response)
 	if marshErr != nil {
