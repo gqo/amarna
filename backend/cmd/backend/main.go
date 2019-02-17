@@ -124,7 +124,10 @@ func GetLettersHandler(w http.ResponseWriter, r *http.Request) {
 //GetPairingsHandler will handle decoding of JSON pakcages for pairing retreival and deliver a result to the frontend
 func GetPairingsHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	username := "gqo"
+
+	urlParams := r.URL.Query()
+	username := urlParams["username"][0]
+
 	allUserPairs, GetPairingsErr := db.GetPairings(username)
 
 	if GetPairingsErr != nil {
@@ -193,8 +196,11 @@ func GetLanguagesHandler(w http.ResponseWriter, r *http.Request) {
 //GetCurrentLessonHandler will handle decoding of JSON pakcages for current lesson retreival and deliver a result to the frontend
 func GetCurrentLessonHandler(w http.ResponseWriter, r *http.Request) {
 	enableCors(&w)
-	lUser := "gqo"
-	rUser := "amvasquez"
+
+	urlParams := r.URL.Query()
+	lUser := urlParams["lUser"][0]
+	rUser := urlParams["rUser"][0]
+
 	lessonPtr, GetCurrentLessonErr := db.GetCurrentLesson(lUser, rUser)
 
 	if GetCurrentLessonErr != nil {
