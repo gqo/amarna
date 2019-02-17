@@ -72,8 +72,8 @@ type Lesson struct {
 	Desc    string `json:"desc"`
 }
 
-// Prepare will be the JSON sent as a response to the frontend
-type Prepare struct {
+// Response will be the JSON sent as a response to the frontend
+type Response struct {
 	Letters   []Letter `json:"letters"`
 	Pairings  []string `json:"pairings"`
 	Validate  bool     `json:"validate"`
