@@ -12,11 +12,14 @@ import PROPS from './server-properties.json'
 export class Profile extends Component {
 	constructor(props) {
 		super(props);
+
+        this.options = ["English", "Spanish", "Chinese", "Japanese"]
+
 		this.onFormSubmit = this.onFormSubmit.bind(this);
 		this.state = {
 			username: "",
-			nativeLang: "",
-			newLang: "",
+			nativeLang: this.options[0],
+			newLang: this.options[0],
 		}
 	}
 
@@ -45,6 +48,14 @@ export class Profile extends Component {
         });
 	}
 
+    createOptions = () => {
+        return this.options.map((option, idx) => {
+            return (
+                <option key={idx}>{option}</option>
+            );
+        });
+    }
+
   	render() {
     	return (
             <Container>
@@ -65,10 +76,7 @@ export class Profile extends Component {
                          value={this.state.nativeLang}
                          onChange={e => this.setState({ nativeLang: e.target.value })} 
                          id="nativeLang">
-                    <option>English</option>
-                    <option>Spanish</option>
-                    <option>Chinese</option>
-                    <option>Japanese</option>
+                        {this.createOptions()}
                   </Input>
                 </FormGroup>
                 <FormGroup>
@@ -78,10 +86,7 @@ export class Profile extends Component {
                          value={this.state.newLang}
                          onChange={e => this.setState({ newLang: e.target.value })} 
                          id="newLang">
-                    <option>English</option>
-                    <option>Spanish</option>
-                    <option>Chinese</option>
-                    <option>Japanese</option>
+                        {this.createOptions()}
                   </Input>
                 </FormGroup>
             <Button>Submit</Button>
