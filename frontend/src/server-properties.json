@@ -2,9 +2,9 @@
     "base": "http://localhost:8080",
     "validate": "/ValidateUser?username={}",
     "getChats": "/GetPairings?username={}",
-    "getMessages": "/GetLetters?lUser={1}&rUser={2}",
+    "getMessages": "/GetLetters?leftUsername={1}&rightUsername={2}",
     "submit": "/SendLetter",
     "register": "/RegisterUser?username={1}&knownLang={2}&learnLang={3}",
-    "getLesson": "/GetLesson?lUser={1}&rUser={2}",
-    "requestNext": "/IncrementLesson?lUser={1}&rUser={2}" 
+    "getLesson": "/GetCurrentLesson?leftUsername={1}&rightUsername={2}",
+    "requestNext": "/IncrementLesson?leftUsername={1}&rightUsername={2}" 
 }
